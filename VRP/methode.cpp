@@ -1,7 +1,7 @@
 #include "methode.h"
 #include <ilcplex/ilocplex.h>
 
-void construction(Data* data, Solution* sol) {
+void cplex(Data* data, Solution* sol) {
 	IloEnv env;
 
 	// CREATE MODEL
@@ -170,6 +170,54 @@ void construction(Data* data, Solution* sol) {
 
 }
 
+void construction(Data* data, Solution* sol) {
+	printf("dist 01 %f\n", data->distance[0][1]);
+	sol->routes = {{0,0}};
+	Solution tested;
+	tested.routes = {{0,0}};
+	double bestCost;
+
+	for(int customer = 1; customer < data->numberCustomers + 1 ; customer++) {
+		tested.routes.push_back({0, customer, 0});
+		getCost(data, &tested);
+		bestCost = tested.cost;
+		printf("0 %f\n", bestCost);
+		tested.routes.pop_back();
+		for(vector <vector <int>>::iterator route = tested.routes.begin() ; route !=tested.routes.end() ; route++) {
+			if(currentCapacity(data, *route) + data->demand[customer] <= data->vehicleCapacity){
+				for(vector <int>::iterator i = (*route).begin() + 1 ; i != (*route).end() ; i++) {
+					tested.routes.insert(i, customer);
+					printRoute(&tested);
+					getCost(data, &tested);
+					if(tested.cost < bestCost) {
+						sol->routes = tested.routes;
+						sol->cost = tested.cost;
+						printf("1 %f\n", bestCost);
+						bestCost = tested.cost;
+						printf("2 %f\n", bestCost);
+					}
+					tested.routes.erase(i);
+				}
+			}
+		}
+
+		tested.routes = sol->routes;
+		tested.cost = sol->cost;
+
+	}
+}
+
+void printRoute(Solution *sol) {
+	printf("--print--\n");
+	for(vector <int> route : sol->routes) {
+		for(int cust : route) {
+			printf("%d ", cust);
+		}
+		printf("\n");
+	}
+	printf("--fin print--\n");
+}
+
 void getCost(Data *data, Solution *sol) {
 	
 	double cost = 0.0;
@@ -182,8 +230,18 @@ void getCost(Data *data, Solution *sol) {
 			}
 		}
 	}
-	printf("%f\n", cost);
+	printf("get %f\n", cost);
 	sol->cost = cost;
+}
+
+int currentCapacity(Data* data, vector<int> route) {
+	int capacity = 0;
+	for(int customer : route) {
+		if(customer != 0) {
+			capacity += data->demand[customer];
+		}
+	}
+	return capacity;
 }
 
 void printSolutionInFile(Data *data, Solution *sol) {

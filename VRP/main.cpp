@@ -17,7 +17,7 @@ int main() {
 	readData(&data, instName);
 	cout << "Instance: " << data.instanceName << endl;
 	
-
+	// cplex(&data, &sol);
 
 	//Get initial solution
 	construction(&data, &sol);

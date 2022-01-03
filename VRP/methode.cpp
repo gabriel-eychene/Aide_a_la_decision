@@ -26,15 +26,13 @@ void construction(Data* data, Solution* sol) {
 	}
 
 	// Create a_i
-	IloBoolVarArray a(env, data->numberCustomers+1);
-	
+	IloIntVarArray a(env, data->numberCustomers+1, 0, data->vehicleCapacity);
 	// Add a_i
 	for(int i = 0 ; i < data->numberCustomers + 1 ; i++) {
 		sprintf(varName, "a(%d)", i);
 		a[i].setName(varName);
 		model.add(a[i]);
 	}
-
 	// CREATE OBJECTIVE FUNCTION
 	IloExpr objfonc(env);
 
@@ -47,7 +45,6 @@ void construction(Data* data, Solution* sol) {
 	}
 
 	model.add(IloMinimize(env, objfonc));
-
 	// CONSTRAINTS
 	// Constraints 1
 	IloRangeArray c1(env);
@@ -101,6 +98,53 @@ void construction(Data* data, Solution* sol) {
 
 	IloCplex vrp(model);
 	vrp.exportModel("modelVRP.lp");
+
+	double before = vrp.getTime();
+	vrp.solve();
+	double after = vrp.getTime();
+
+
+
+	// vector <vector<int>> rotas;
+	// if (vrp.getStatus() != 0) {
+
+	// 	// Get solution
+	// 	int a = 0;
+	// 	list<int> customers;
+	// 	list<int>::iterator it;
+
+	// 	customers.clear();
+	// 	for (int i = 1; i <= data->numberCustomers; i++) {
+	// 		customers.push_back(i);
+	// 	}
+	// 	it = customers.begin();
+
+	// 	vector<int> vec;
+	// 	vec.push_back(0);
+
+	// 	while (customers.size() > 0) {
+	// 		if (vrp.getValue(x[a][*it]) > 0.001) {
+	// 			a = *it;
+	// 			vec.push_back(a);
+	// 			customers.remove(*it);
+	// 			it = customers.begin();
+	// 		}
+	// 		else {
+	// 			++it;
+	// 		}
+	// 		if (a > 0) {
+	// 			if (vrp.getValue(x[a][0]) > 0.001) {
+	// 				vec.push_back(0);
+	// 				rotas.push_back(vec);
+	// 				vec.clear();
+	// 				vec.push_back(0);
+	// 				a = 0;
+	// 				it = customers.begin();
+	// 			}
+	// 		}
+	// 	}
+	// }
+	// sol->routes = rotas;
 
 	env.end();
 

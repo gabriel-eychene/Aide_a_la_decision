@@ -805,8 +805,8 @@ xgenericbranch.o: $(EXSRCCX)/xgenericbranch.c
 
 
 
-vrp: main.o readData.o functions.o 
-	$(CCC) $(CCFLAGS) $(CCLNDIRS) -o main main.o readData.o model.o $(CCLNFLAGS)
+vrp: main.o readData.o methode.o 
+	$(CCC) $(CCFLAGS) $(CCLNDIRS) -o main main.o readData.o methode.o $(CCLNFLAGS)
 
 readData.o: readData.cpp
 	$(CCC) -c $(CCFLAGS) readData.cpp -o readData.o
@@ -814,8 +814,8 @@ readData.o: readData.cpp
 main.o: main.cpp
 	$(CCC) -c $(CCFLAGS) main.cpp -o main.o
 
-functions.o: functions.cpp
-	$(CCC) -c $(CCFLAGS) functions.cpp -o functions.o
+methode.o: methode.cpp
+	$(CCC) -c $(CCFLAGS) methode.cpp -o methode.o
 	
 
 

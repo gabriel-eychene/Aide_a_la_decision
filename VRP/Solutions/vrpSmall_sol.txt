@@ -1,0 +1,7 @@
+Upper Bound:     131.04
+Lower Bound:     131.04
+Running time:       0.02
+
+Solution: 
+0      2      3      0      
+0      4      1      0      

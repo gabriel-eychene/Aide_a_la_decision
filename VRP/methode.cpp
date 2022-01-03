@@ -51,7 +51,9 @@ void construction(Data* data, Solution* sol) {
 	for (int j = 1; j < data->numberCustomers+1; j++) {
 		IloExpr p(env);
 		for (int i = 0; i < data->numberCustomers+1; i++) {
-			p += x[i][j];
+			if(i != j){
+				p += x[i][j];
+			}
 		}
 		c1.add( p == 1 );
 		sprintf(varName, "c1(%d)", j);
@@ -63,7 +65,9 @@ void construction(Data* data, Solution* sol) {
 	for (int i = 1; i < data->numberCustomers+1; i++) {
 		IloExpr p(env);
 		for (int j = 0; j < data->numberCustomers+1; j++) {
-			p += x[i][j];
+			if(i != j){
+				p += x[i][j];
+			}
 		}
 		c2.add( p == 1 );
 		sprintf(varName, "c2(%d)", i);
@@ -99,65 +103,107 @@ void construction(Data* data, Solution* sol) {
 	IloCplex vrp(model);
 	vrp.exportModel("modelVRP.lp");
 
+	vrp.setParam(IloCplex::Param::TimeLimit, 300);
+
 	double before = vrp.getTime();
 	vrp.solve();
 	double after = vrp.getTime();
 
 
 
-	// vector <vector<int>> rotas;
-	// if (vrp.getStatus() != 0) {
+	vector <vector<int>> rotas;
+	if (vrp.getStatus() != 0) {
 
-	// 	// Get solution
-	// 	int a = 0;
-	// 	list<int> customers;
-	// 	list<int>::iterator it;
+		// for (int i = 0; i < data->numberCustomers+1; i++) {
+		// 	for (int j = 0; j < data->numberCustomers+1; j++) {
+		// 		printf("x %d %d = %f\n", i, j, vrp.getValue(x[i][j]));
+		// 	}
+		// }
 
-	// 	customers.clear();
-	// 	for (int i = 1; i <= data->numberCustomers; i++) {
-	// 		customers.push_back(i);
-	// 	}
-	// 	it = customers.begin();
+		//Get solution
+		int currentCustomer = 0;
+		list<int> customers;
+		list<int>::iterator it;
 
-	// 	vector<int> vec;
-	// 	vec.push_back(0);
+		customers.clear();
+		for (int i = 1; i <= data->numberCustomers; i++) {
+			customers.push_back(i);
+		}
+		it = customers.begin();
 
-	// 	while (customers.size() > 0) {
-	// 		if (vrp.getValue(x[a][*it]) > 0.001) {
-	// 			a = *it;
-	// 			vec.push_back(a);
-	// 			customers.remove(*it);
-	// 			it = customers.begin();
-	// 		}
-	// 		else {
-	// 			++it;
-	// 		}
-	// 		if (a > 0) {
-	// 			if (vrp.getValue(x[a][0]) > 0.001) {
-	// 				vec.push_back(0);
-	// 				rotas.push_back(vec);
-	// 				vec.clear();
-	// 				vec.push_back(0);
-	// 				a = 0;
-	// 				it = customers.begin();
-	// 			}
-	// 		}
-	// 	}
-	// }
-	// sol->routes = rotas;
+		vector<int> vec;
+		vec.push_back(0);
 
+		while (customers.size() > 0 && it != customers.end()) {
+			if (vrp.getValue(x[currentCustomer][*it]) > 0.001) {
+				currentCustomer = *it;
+				vec.push_back(currentCustomer);
+				customers.remove(*it);
+				it = customers.begin();
+			}
+			else {
+				++it;
+			}
+			if (currentCustomer > 0) {
+				if (vrp.getValue(x[currentCustomer][0]) > 0.001) {
+					vec.push_back(0);
+					rotas.push_back(vec);
+					vec.clear();
+					vec.push_back(0);
+					currentCustomer = 0;
+					it = customers.begin();
+				}
+			}
+		}
+	}
+	sol->routes = rotas;
+
+	sol->time = after - before;
+	sol->cost = vrp.getBestObjValue();
+	int inf = numeric_limits<int>::max();
+	sol->UB = inf;
+	if (vrp.getStatus() != 0) {
+		sol->UB = vrp.getObjValue();
+	}
+	sol->LB = vrp.getBestObjValue();
 	env.end();
 
 }
 
 void printSolutionInFile(Data *data, Solution *sol) {
+	int inf = numeric_limits<int>::max();
 
 	char tempString[100];
 	sprintf(tempString, "Solutions/%s_sol.txt", data->instanceName.c_str());
 	ofstream solution(tempString, ios::out);
 	
-	solution << "Cost: " << setw(10) << fixed << setprecision(2) << sol->cost;
-	//...
+	solution << "Upper Bound: ";
+	if (sol->UB > inf - 1000) {
+		solution << setw(10) << "--";
+	}
+	else {
+		solution << setw(10) << fixed << setprecision(2) << sol->UB;
+	}
 
+	solution << "\nLower Bound: ";
+	if (sol->LB > -1) {
+		solution << setw(10) << fixed << setprecision(2) << sol->LB;
+	}
+	else {
+		solution << setw(10) << "--";
+	}
+
+	solution << "\nRunning time: ";
+	solution << setw(10) << sol->time << "\n\n";
+
+	if (sol->UB < inf-1000) {
+		solution << "Solution: " << endl;
+		for (int r = 0; r < sol->routes.size(); r++) {
+			for (int i = 0; i < sol->routes[r].size(); i++) {
+				solution << sol->routes[r][i] << setw(7);
+			}
+			solution << "\n";
+		} 
+	}
 	solution.close();
 }

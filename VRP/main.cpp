@@ -11,7 +11,7 @@ int main() {
 
 	Data data;
 	Solution sol;
-	string instName = "Instances/vrpSmall.txt";
+	string instName = "Instances/vrpnc1.txt";
 	
 	//Read instance file
 	readData(&data, instName);
@@ -29,13 +29,12 @@ int main() {
 	// sol.time = (double) (clock() - before)/CLOCKS_PER_SEC;
 	
 	// //Print solution in file
-	// printSolutionInFile(&data, &sol);
+	printSolutionInFile(&data, &sol);
 
 	delete[] data.demand;
 	for (int i = 0; i <= data.numberCustomers; i++) {
 		delete[] data.distance[i];
 	}
 	delete[] data.distance;
-
 	return 0;
 }

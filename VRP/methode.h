@@ -11,6 +11,8 @@ struct Solution {
 	double cost;		//Solution cost
 	double time;		//Running time
 	vector <vector <int>> routes;	//Solution
+	double UB;
+	double LB;
 };
 
 void construction(Data* data, Solution* sol);

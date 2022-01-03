@@ -804,6 +804,8 @@ xgenericbranch.o: $(EXSRCCX)/xgenericbranch.c
 	$(CC) -c $(CFLAGS) $(EXSRCCX)/xgenericbranch.c -o xgenericbranch.o
 
 
+execute_vrp: vrp
+	./main
 
 vrp: main.o readData.o methode.o 
 	$(CCC) $(CCFLAGS) $(CCLNDIRS) -o main main.o readData.o methode.o $(CCLNFLAGS)

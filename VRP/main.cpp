@@ -1,5 +1,5 @@
 #include "readData.h"
-#include "functions.h"
+#include "methode.h"
 #include <iostream>
 #include <string>
 
@@ -21,7 +21,7 @@ int main() {
 
 	//Get initial solution
 	construction(&data, &sol);
-
+	printf("salut\n");
 	// //Improve initial solution
 	// //...
 

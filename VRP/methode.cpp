@@ -35,7 +35,7 @@ void construction(Data* data, Solution* sol) {
 		model.add(a[i]);
 	}
 
-		// CREATE OBJECTIVE FUNCTION
+	// CREATE OBJECTIVE FUNCTION
 	IloExpr objfonc(env);
 
 	for (int i = 0; i < data->numberCustomers+1; i++) {
@@ -61,7 +61,6 @@ void construction(Data* data, Solution* sol) {
 		c1[j-1].setName(varName);
 	}
 	model.add(c1);
-	
 	// Constraints 2
 	IloRangeArray c2(env);
 	for (int i = 1; i < data->numberCustomers+1; i++) {
@@ -79,18 +78,18 @@ void construction(Data* data, Solution* sol) {
 	// i goes from 1 to n but in c3 it goes from 0 to n-1
 	IloArray <IloConstraintArray> c3(env, data->numberCustomers);
 	for(int i = 1 ; i < data->numberCustomers + 1 ; i++) {
-		IloConstraintArray array(env, data->numberCustomers + 1);
+		IloConstraintArray array(env);
+		
 		for(int j = 0 ; j < data->numberCustomers + 1 ; j++ ) {
 			if(i != j) {
 				array.add(a[j] - a[i] + data->demand[i] <= data->vehicleCapacity * ( 1 - x[i][j]) );
-				sprintf(varName, "c3(%d,%d)", i, j);
-				array[j].setName(varName);
 			}
 		}
+		sprintf(varName, "c3(%d)", i);
+		array.setNames(varName);
 		c3[i-1] = array;
 		model.add(c3[i-1]);
 	}
-
 	// Constraints 4
 	IloRangeArray c4(env);
 	for(int i = 1 ; i < data->numberCustomers + 1 ; i++ ) {

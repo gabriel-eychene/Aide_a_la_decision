@@ -77,9 +77,9 @@ void construction(Data* data, Solution* sol) {
 
 	// Constraints 3
 	// i goes from 1 to n but in c3 it goes from 0 to n-1
-	IloArray <IloRangeArray> c3(env, data->numberCustomers);
+	IloArray <IloConstraintArray> c3(env, data->numberCustomers);
 	for(int i = 1 ; i < data->numberCustomers + 1 ; i++) {
-		IloRangeArray array(env, data->numberCustomers + 1);
+		IloConstraintArray array(env, data->numberCustomers + 1);
 		for(int j = 0 ; j < data->numberCustomers + 1 ; j++ ) {
 			if(i != j) {
 				array.add(a[j] - a[i] + data->demand[i] <= data->vehicleCapacity * ( 1 - x[i][j]) );

@@ -170,6 +170,22 @@ void construction(Data* data, Solution* sol) {
 
 }
 
+void getCost(Data *data, Solution *sol) {
+	
+	double cost = 0.0;
+	for(vector <int> route : sol->routes) {
+		int prec = 0;
+		for(int customer : route) {
+			if(prec != customer){
+				cost += data->distance[prec][customer];
+				prec = customer;
+			}
+		}
+	}
+	printf("%f\n", cost);
+	sol->cost = cost;
+}
+
 void printSolutionInFile(Data *data, Solution *sol) {
 	int inf = numeric_limits<int>::max();
 

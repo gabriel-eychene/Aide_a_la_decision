@@ -11,7 +11,7 @@ int main() {
 
 	Data data;
 	Solution sol;
-	string instName = "Instances/vrpnc1.txt";
+	string instName = "Instances/vrpSmall.txt";
 	
 	//Read instance file
 	readData(&data, instName);
@@ -27,7 +27,7 @@ int main() {
 
 	// //Get end time
 	// sol.time = (double) (clock() - before)/CLOCKS_PER_SEC;
-	
+	getCost(&data, &sol);
 	// //Print solution in file
 	printSolutionInFile(&data, &sol);
 

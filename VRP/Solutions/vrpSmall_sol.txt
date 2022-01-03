@@ -1,6 +1,6 @@
 Upper Bound:     131.04
 Lower Bound:     131.04
-Running time:       0.02
+Running time:       0.14
 
 Solution: 
 0      2      3      0      

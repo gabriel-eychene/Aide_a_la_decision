@@ -16,6 +16,7 @@ struct Solution {
 };
 
 void construction(Data* data, Solution* sol);
+void getCost(Data *data, Solution *sol);
 void printSolutionInFile(Data* data, Solution* sol);
 
 

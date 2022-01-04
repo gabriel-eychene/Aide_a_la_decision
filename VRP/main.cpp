@@ -26,15 +26,24 @@ int main() {
 	cout << "Instance: " << data.instanceName << endl;
 	
 	// CPLEX EXECUTION
-	// cplex(&data, &sol);
+	/**************************
+	cplex(&data, &sol);
 
+	// Get end time
+	sol.time = (double) (clock() - before)/CLOCKS_PER_SEC;
+
+	// Print solution in file
+	printSolutionInFileCplex(&data, &sol);
+
+	**************************/
 
 	// HEURISTIC EXECUTION
+	
 	// Get initial solution
 	construction(&data, &sol);
 
 	// Improve initial solution
-	// amelioration(&data, &sol, before);
+	amelioration(&data, &sol, before);
 
 	// Get end time
 	sol.time = (double) (clock() - before)/CLOCKS_PER_SEC;
@@ -42,6 +51,9 @@ int main() {
 	// Print solution in file
 	printSolutionInFileHeur(&data, &sol);
 
+	
+
+	// Freeing memory
 	delete[] data.demand;
 	for (int i = 0; i <= data.numberCustomers; i++) {
 		delete[] data.distance[i];

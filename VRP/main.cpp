@@ -29,7 +29,7 @@ int main() {
 	// sol.time = (double) (clock() - before)/CLOCKS_PER_SEC;
 	getCost(&data, &sol);
 	// //Print solution in file
-	printSolutionInFile(&data, &sol);
+	printSolutionInFileHeur(&data, &sol);
 
 	delete[] data.demand;
 	for (int i = 0; i <= data.numberCustomers; i++) {

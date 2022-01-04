@@ -1,4 +1,6 @@
-Upper Bound:         --
-Lower Bound:       0.00
+Cost:     145.60
 Running time:       0.00
 
+Solution: 
+0      4      2      1      0      
+0      3      0      

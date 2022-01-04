@@ -20,7 +20,8 @@ void construction(Data* data, Solution* sol);
 void printRoute(Solution *sol);
 void getCost(Data *data, Solution *sol);
 int currentCapacity(Data* data, vector<int> route);
-void printSolutionInFile(Data* data, Solution* sol);
+void printSolutionInFileCplex(Data* data, Solution* sol);
+void printSolutionInFileHeur(Data* data, Solution* sol);
 
 
 #endif

@@ -244,7 +244,7 @@ int currentCapacity(Data* data, vector<int> route) {
 	return capacity;
 }
 
-void printSolutionInFile(Data *data, Solution *sol) {
+void printSolutionInFileCplex(Data *data, Solution *sol) {
 	int inf = numeric_limits<int>::max();
 
 	char tempString[100];
@@ -278,6 +278,29 @@ void printSolutionInFile(Data *data, Solution *sol) {
 			}
 			solution << "\n";
 		} 
+	}
+	solution.close();
+}
+
+void printSolutionInFileHeur(Data *data, Solution *sol) {
+	int inf = numeric_limits<int>::max();
+
+	char tempString[100];
+	sprintf(tempString, "Solutions/%s_sol.txt", data->instanceName.c_str());
+	ofstream solution(tempString, ios::out);
+	
+	solution << "Cost: ";
+	solution << setw(10) << fixed << setprecision(2) << sol->cost;
+
+	solution << "\nRunning time: ";
+	solution << setw(10) << sol->time << "\n\n";
+
+	solution << "Solution: " << endl;
+	for (int r = 0; r < sol->routes.size(); r++) {
+		for (int i = 0; i < sol->routes[r].size(); i++) {
+			solution << sol->routes[r][i] << setw(7);
+		}
+		solution << "\n";
 	}
 	solution.close();
 }

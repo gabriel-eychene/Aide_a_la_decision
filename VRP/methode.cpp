@@ -125,7 +125,7 @@ void cplex(Data* data, Solution* sol) {
 	double before = vrp.getTime();
 	vrp.solve();
 	double after = vrp.getTime();
-	
+
 
 	vector <vector<int>> rotas;
 	if (vrp.getStatus() != 0) {
@@ -201,19 +201,32 @@ void construction(Data* data, Solution* sol) {
 	tested.routes = {{0,1,0}};
 	double bestCost;
 
+	//For each customer
 	for(int customer = 2; customer < data->numberCustomers + 1 ; customer++) {
+
+		//Create a route with only this custumer
 		tested.routes.push_back({0, customer, 0});
 		getCost(data, &tested);
 		sol->routes = tested.routes;
 		sol->cost = tested.cost;
 		bestCost = tested.cost;
 		tested.routes.pop_back();
+
+		//For each route
 		for(vector <vector <int>>::iterator route = tested.routes.begin() ; route !=tested.routes.end() ; route++) {
+
+			//If the remaining capacity of the truck is greater than the cost of the next customer
 			if(currentCapacity(data, *route) + data->demand[customer] <= data->vehicleCapacity){
+
+				//Adding the cost to the total cost
 				for(vector <int>::iterator i = (*route).begin() + 1 ; i != (*route).end() ; i++) {
 					i = (*route).insert(i, customer);
 					getCost(data, &tested);
+
+					//If total cost < the best cost of the routes already visited
 					if(tested.cost < bestCost) {
+
+						//We keep this route
 						sol->routes = tested.routes;
 						sol->cost = tested.cost;
 						bestCost = tested.cost;
@@ -229,6 +242,16 @@ void construction(Data* data, Solution* sol) {
 	}
 }
 
+
+/**
+* IMPROVEMENT HEURISTIC METHOD
+*
+* This method will perform all the treatment concerning our improvement heuristic.
+*
+* @param data Object that contains the instantiated data.
+* @param sol Objetc that will contain the solution.
+* @param before Indicates when we start the treatment, to have a time limit.
+*/
 void amelioration(Data* data, Solution* sol, clock_t before) {
 	bool isOptimum = false;
 	int customer;

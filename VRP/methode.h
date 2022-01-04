@@ -17,6 +17,7 @@ struct Solution {
 
 void cplex(Data* data, Solution* sol);
 void construction(Data* data, Solution* sol);
+void amelioration(Data* data, Solution* sol, clock_t before);
 void printRoute(Solution *sol);
 void getCost(Data *data, Solution *sol);
 int currentCapacity(Data* data, vector<int> route);

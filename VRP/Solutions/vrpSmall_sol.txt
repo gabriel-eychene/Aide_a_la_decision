@@ -1,6 +1,6 @@
-Cost:     145.60
+Cost:     131.04
 Running time:       0.00
 
 Solution: 
-0      4      2      1      0      
-0      3      0      
+0      4      1      0      
+0      2      3      0      

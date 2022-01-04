@@ -17,7 +17,7 @@ int main() {
 
 	Data data;
 	Solution sol;
-	string instName = "Instances/vrpSmall.txt";
+	string instName = "Instances/vrpnc5.txt";
 	
 	//Read instance file
 	readData(&data, instName);
@@ -27,12 +27,15 @@ int main() {
 
 	//Get initial solution
 	construction(&data, &sol);
-	printf("salut\n");
+	printf("salut---------------------\n");
+	printRoute(&sol);
 	// //Improve initial solution
-	// //...
+	amelioration(&data, &sol, before);
+	
+	printf("hello\n");
 
 	// //Get end time
-	// sol.time = (double) (clock() - before)/CLOCKS_PER_SEC;
+	sol.time = (double) (clock() - before)/CLOCKS_PER_SEC;
 	getCost(&data, &sol);
 	// //Print solution in file
 	printSolutionInFileHeur(&data, &sol);

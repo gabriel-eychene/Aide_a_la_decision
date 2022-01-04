@@ -189,7 +189,6 @@ void cplex(Data* data, Solution* sol) {
 * @param sol Objetc that will contain the solution.
 */
 void construction(Data* data, Solution* sol) {
-	printf("dist 01 %f\n", data->distance[0][1]);
 	sol->routes = {{0,1,0}};
 	Solution tested;
 	tested.routes = {{0,1,0}};
@@ -222,6 +221,71 @@ void construction(Data* data, Solution* sol) {
 		tested.routes = sol->routes;
 		tested.cost = sol->cost;
 
+	}
+}
+
+void amelioration(Data* data, Solution* sol, clock_t before) {
+	bool isOptimum = false;
+	int customer;
+	Solution tested;
+	tested.routes = sol->routes;
+	tested.cost = sol->cost;
+
+	vector <vector <int>>::iterator route;
+	vector <vector <int>>::iterator routeDest;
+	vector <int>::iterator i;
+	vector <int>::iterator iDest;
+	while(isOptimum == false && (double) (clock() - before)/CLOCKS_PER_SEC < 300) {
+		printf("nouveau test\n");
+		isOptimum = true;
+		tested.routes = sol->routes;
+		tested.cost = sol->cost;
+		route = tested.routes.begin();
+		while(isOptimum && route != tested.routes.end()) {
+			printf("nouvelle route\n");
+			i = (*route).begin() + 1;
+			while(isOptimum && i != (*route).end() - 1) {
+				printf("nouvelle pos\n");
+				customer = *i;
+				// printf("custom = %d\n", customer);
+				// printf("i ave %d ", *i);
+				i = (*route).erase(i);
+				// printf("i ape %d ", *i);
+				iDest = i;
+				iDest++;
+				// printf("idest apc %d\n", *iDest);
+				routeDest = route;
+				while(routeDest != tested.routes.end()) {
+					printf("test route\n");
+					if(currentCapacity(data, *routeDest) + data->demand[customer] <= data->vehicleCapacity) {
+						while(iDest != (*routeDest).end()) {
+							printf("test pos\n");
+							// printRoute(&tested);
+							// printf("idest avi %d ", *iDest);
+							iDest = (*routeDest).insert(iDest, customer);
+							// printf("idest api %d\n", *iDest);
+							printRoute(&tested);
+							getCost(data, &tested);
+							if(tested.cost < sol->cost) {
+								printf("poss trouvé\n");
+								sol->routes = tested.routes;
+								sol->cost = tested.cost;
+								isOptimum = false;
+							}
+							// printf("idest avd %d ", *iDest);
+							iDest = (*routeDest).erase(iDest);
+							// printf("idest apd %d\n", *iDest);
+							iDest++;
+						}
+					}
+					routeDest++;
+					iDest = (*routeDest).begin() + 1;
+				}
+				i = (*route).insert(i, customer);
+				i++;
+			}
+			route++;
+		}
 	}
 }
 

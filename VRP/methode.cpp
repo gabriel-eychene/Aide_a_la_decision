@@ -36,12 +36,14 @@ void cplex(Data* data, Solution* sol) {
 
 	// Create a_i
 	IloIntVarArray a(env, data->numberCustomers+1, 0, data->vehicleCapacity);
+
 	// Add a_i
 	for(int i = 0 ; i < data->numberCustomers + 1 ; i++) {
 		sprintf(varName, "a(%d)", i);
 		a[i].setName(varName);
 		model.add(a[i]);
 	}
+
 	// CREATE OBJECTIVE FUNCTION
 	IloExpr objfonc(env);
 
@@ -54,7 +56,9 @@ void cplex(Data* data, Solution* sol) {
 	}
 
 	model.add(IloMinimize(env, objfonc));
+
 	// CONSTRAINTS
+
 	// Constraints 1
 	IloRangeArray c1(env);
 	for (int j = 1; j < data->numberCustomers+1; j++) {
@@ -69,6 +73,7 @@ void cplex(Data* data, Solution* sol) {
 		c1[j-1].setName(varName);
 	}
 	model.add(c1);
+
 	// Constraints 2
 	IloRangeArray c2(env);
 	for (int i = 1; i < data->numberCustomers+1; i++) {
@@ -100,6 +105,7 @@ void cplex(Data* data, Solution* sol) {
 		c3[i-1] = array;
 		model.add(c3[i-1]);
 	}
+
 	// Constraints 4
 	IloRangeArray c4(env);
 	for(int i = 1 ; i < data->numberCustomers + 1 ; i++ ) {
@@ -112,13 +118,14 @@ void cplex(Data* data, Solution* sol) {
 	IloCplex vrp(model);
 	vrp.exportModel("modelVRP.lp");
 
+	//Limit of CPLEX running time
 	vrp.setParam(IloCplex::Param::TimeLimit, 300);
 
+	//Compute of CPLEX time
 	double before = vrp.getTime();
 	vrp.solve();
 	double after = vrp.getTime();
-
-
+	
 
 	vector <vector<int>> rotas;
 	if (vrp.getStatus() != 0) {
@@ -226,13 +233,6 @@ void construction(Data* data, Solution* sol) {
 }
 
 
-/**
-* ROUTE DISPLAY METHOD
-*
-* This method will display the route of the solution.
-*
-* @param sol Object that contains the solution.
-*/
 void printRoute(Solution *sol) {
 	printf("--print--\n");
 	for(vector <int> route : sol->routes) {
@@ -248,7 +248,7 @@ void printRoute(Solution *sol) {
 /**
 * GET COST METHOD
 *
-* This method will set the cost of the solution passed in parameter.
+* This method will compute the cost of the solution passed in parameter.
 *
 * @param data Object that contains the instantiated data.
 * @param sol Object that contains the solution.
@@ -256,8 +256,12 @@ void printRoute(Solution *sol) {
 void getCost(Data *data, Solution *sol) {
 	
 	double cost = 0.0;
+
+	//Iteration on the routes of the solution
 	for(vector <int> route : sol->routes) {
 		int prec = 0;
+
+		//Iteration on the custumers of the route
 		for(int customer : route) {
 			if(prec != customer){
 				cost += data->distance[prec][customer];
@@ -281,6 +285,8 @@ void getCost(Data *data, Solution *sol) {
 */
 int currentCapacity(Data* data, vector<int> route) {
 	int capacity = 0;
+
+	//Iteration on the custumers of the route
 	for(int customer : route) {
 		if(customer != 0) {
 			capacity += data->demand[customer];
@@ -301,10 +307,13 @@ int currentCapacity(Data* data, vector<int> route) {
 void printSolutionInFileCplex(Data *data, Solution *sol) {
 	int inf = numeric_limits<int>::max();
 
+	//Initialization of the stream
 	char tempString[100];
 	sprintf(tempString, "Solutions/%s_sol.txt", data->instanceName.c_str());
 	ofstream solution(tempString, ios::out);
 	
+	//Writing the different informations in the stream
+	//Upper Bound
 	solution << "Upper Bound: ";
 	if (sol->UB > inf - 1000) {
 		solution << setw(10) << "--";
@@ -313,6 +322,7 @@ void printSolutionInFileCplex(Data *data, Solution *sol) {
 		solution << setw(10) << fixed << setprecision(2) << sol->UB;
 	}
 
+	//Lower Bound
 	solution << "\nLower Bound: ";
 	if (sol->LB > -1) {
 		solution << setw(10) << fixed << setprecision(2) << sol->LB;
@@ -321,9 +331,11 @@ void printSolutionInFileCplex(Data *data, Solution *sol) {
 		solution << setw(10) << "--";
 	}
 
+	//Running Time
 	solution << "\nRunning time: ";
 	solution << setw(10) << sol->time << "\n\n";
 
+	//Solution
 	if (sol->UB < inf-1000) {
 		solution << "Solution: " << endl;
 		for (int r = 0; r < sol->routes.size(); r++) {
@@ -348,16 +360,21 @@ void printSolutionInFileCplex(Data *data, Solution *sol) {
 void printSolutionInFileHeur(Data *data, Solution *sol) {
 	int inf = numeric_limits<int>::max();
 
+	//Initialization of the stream
 	char tempString[100];
 	sprintf(tempString, "Solutions/%s_sol.txt", data->instanceName.c_str());
 	ofstream solution(tempString, ios::out);
 	
+	//Writing the different informations in the stream
+	//Cost
 	solution << "Cost: ";
 	solution << setw(10) << fixed << setprecision(2) << sol->cost;
 
+	//Running Time
 	solution << "\nRunning time: ";
 	solution << setw(10) << sol->time << "\n\n";
 
+	//Solution
 	solution << "Solution: " << endl;
 	for (int r = 0; r < sol->routes.size(); r++) {
 		for (int i = 0; i < sol->routes[r].size(); i++) {

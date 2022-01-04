@@ -125,7 +125,7 @@ void cplex(Data* data, Solution* sol) {
 	double before = vrp.getTime();
 	vrp.solve();
 	double after = vrp.getTime();
-	
+
 
 	vector <vector<int>> rotas;
 	if (vrp.getStatus() != 0) {
@@ -231,6 +231,16 @@ void construction(Data* data, Solution* sol) {
 	}
 }
 
+
+/**
+* IMPROVEMENT HEURISTIC METHOD
+*
+* This method will perform all the treatment concerning our improvement heuristic.
+*
+* @param data Object that contains the instantiated data.
+* @param sol Objetc that will contain the solution.
+* @param before Indicates when we start the treatment, to have a time limit.
+*/
 void amelioration(Data* data, Solution* sol, clock_t before) {
 	bool isOptimum = false;
 	int customer;

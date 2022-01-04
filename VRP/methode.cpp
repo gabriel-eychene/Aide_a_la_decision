@@ -264,17 +264,18 @@ void amelioration(Data* data, Solution* sol, clock_t before) {
 	vector <int>::iterator i;
 	vector <int>::iterator iDest;
 
-	//As long as the optimum is not reached and there is less than 5min of "execution" time.
+	//As long as the local optimum is not reached and there is less than 5min of "execution" time.
 	while(isOptimum == false && (double) (clock() - before)/CLOCKS_PER_SEC < 300) {
 		isOptimum = true;
 		tested.routes = sol->routes;
 		tested.cost = sol->cost;
 		route = tested.routes.begin();
 
-		//Test of the routes and we keep the best
+		//Iteration on the routes
 		while(isOptimum && route != tested.routes.end()) {
 			i = (*route).begin() + 1;
 
+			//Iteration on the customers
 			while(isOptimum && i != (*route).end() - 1) {
 				customer = *i;
 				i = (*route).erase(i);
@@ -282,10 +283,13 @@ void amelioration(Data* data, Solution* sol, clock_t before) {
 				iDest++;
 				routeDest = route;
 
+				//Test with routes which are not tested yet
 				while(routeDest != tested.routes.end()) {
 
+					//Can we put the customer in the road
 					if(currentCapacity(data, *routeDest) + data->demand[customer] <= data->vehicleCapacity) {
 
+						//Which position is the best
 						while(iDest != (*routeDest).end()) {
 							iDest = (*routeDest).insert(iDest, customer);
 							getCost(data, &tested);

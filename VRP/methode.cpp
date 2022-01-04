@@ -201,7 +201,10 @@ void construction(Data* data, Solution* sol) {
 	tested.routes = {{0,1,0}};
 	double bestCost;
 
+	//For each customer
 	for(int customer = 2; customer < data->numberCustomers + 1 ; customer++) {
+
+		//Create a route with only this custumer
 		tested.routes.push_back({0, customer, 0});
 		printRoute(&tested);
 		getCost(data, &tested);
@@ -209,13 +212,23 @@ void construction(Data* data, Solution* sol) {
 		sol->cost = tested.cost;
 		bestCost = tested.cost;
 		tested.routes.pop_back();
+
+		//For each route
 		for(vector <vector <int>>::iterator route = tested.routes.begin() ; route !=tested.routes.end() ; route++) {
+
+			//If the remaining capacity of the truck is greater than the cost of the next customer
 			if(currentCapacity(data, *route) + data->demand[customer] <= data->vehicleCapacity){
+
+				//Adding the cost to the total cost
 				for(vector <int>::iterator i = (*route).begin() + 1 ; i != (*route).end() ; i++) {
 					i = (*route).insert(i, customer);
 					printRoute(&tested);
 					getCost(data, &tested);
+
+					//If total cost < the best cost of the routes already visited
 					if(tested.cost < bestCost) {
+
+						//We keep this route
 						sol->routes = tested.routes;
 						sol->cost = tested.cost;
 						bestCost = tested.cost;

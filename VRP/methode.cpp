@@ -203,7 +203,6 @@ void construction(Data* data, Solution* sol) {
 
 	for(int customer = 2; customer < data->numberCustomers + 1 ; customer++) {
 		tested.routes.push_back({0, customer, 0});
-		printRoute(&tested);
 		getCost(data, &tested);
 		sol->routes = tested.routes;
 		sol->cost = tested.cost;
@@ -213,7 +212,6 @@ void construction(Data* data, Solution* sol) {
 			if(currentCapacity(data, *route) + data->demand[customer] <= data->vehicleCapacity){
 				for(vector <int>::iterator i = (*route).begin() + 1 ; i != (*route).end() ; i++) {
 					i = (*route).insert(i, customer);
-					printRoute(&tested);
 					getCost(data, &tested);
 					if(tested.cost < bestCost) {
 						sol->routes = tested.routes;
@@ -243,45 +241,29 @@ void amelioration(Data* data, Solution* sol, clock_t before) {
 	vector <int>::iterator i;
 	vector <int>::iterator iDest;
 	while(isOptimum == false && (double) (clock() - before)/CLOCKS_PER_SEC < 300) {
-		printf("nouveau test\n");
 		isOptimum = true;
 		tested.routes = sol->routes;
 		tested.cost = sol->cost;
 		route = tested.routes.begin();
 		while(isOptimum && route != tested.routes.end()) {
-			printf("nouvelle route\n");
 			i = (*route).begin() + 1;
 			while(isOptimum && i != (*route).end() - 1) {
-				printf("nouvelle pos\n");
 				customer = *i;
-				// printf("custom = %d\n", customer);
-				// printf("i ave %d ", *i);
 				i = (*route).erase(i);
-				// printf("i ape %d ", *i);
 				iDest = i;
 				iDest++;
-				// printf("idest apc %d\n", *iDest);
 				routeDest = route;
 				while(routeDest != tested.routes.end()) {
-					printf("test route\n");
 					if(currentCapacity(data, *routeDest) + data->demand[customer] <= data->vehicleCapacity) {
 						while(iDest != (*routeDest).end()) {
-							printf("test pos\n");
-							// printRoute(&tested);
-							// printf("idest avi %d ", *iDest);
 							iDest = (*routeDest).insert(iDest, customer);
-							// printf("idest api %d\n", *iDest);
-							printRoute(&tested);
 							getCost(data, &tested);
 							if(tested.cost < sol->cost) {
-								printf("poss trouvé\n");
 								sol->routes = tested.routes;
 								sol->cost = tested.cost;
 								isOptimum = false;
 							}
-							// printf("idest avd %d ", *iDest);
 							iDest = (*routeDest).erase(iDest);
-							// printf("idest apd %d\n", *iDest);
 							iDest++;
 						}
 					}
@@ -294,18 +276,6 @@ void amelioration(Data* data, Solution* sol, clock_t before) {
 			route++;
 		}
 	}
-}
-
-
-void printRoute(Solution *sol) {
-	printf("--print--\n");
-	for(vector <int> route : sol->routes) {
-		for(int cust : route) {
-			printf("%d ", cust);
-		}
-		printf("\n");
-	}
-	printf("--fin print--\n");
 }
 
 
@@ -333,7 +303,6 @@ void getCost(Data *data, Solution *sol) {
 			}
 		}
 	}
-	printf("get %f\n", cost);
 	sol->cost = cost;
 }
 

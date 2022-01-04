@@ -172,31 +172,31 @@ void cplex(Data* data, Solution* sol) {
 
 void construction(Data* data, Solution* sol) {
 	printf("dist 01 %f\n", data->distance[0][1]);
-	sol->routes = {{0,0}};
+	sol->routes = {{0,1,0}};
 	Solution tested;
-	tested.routes = {{0,0}};
+	tested.routes = {{0,1,0}};
 	double bestCost;
 
-	for(int customer = 1; customer < data->numberCustomers + 1 ; customer++) {
+	for(int customer = 2; customer < data->numberCustomers + 1 ; customer++) {
 		tested.routes.push_back({0, customer, 0});
+		printRoute(&tested);
 		getCost(data, &tested);
+		sol->routes = tested.routes;
+		sol->cost = tested.cost;
 		bestCost = tested.cost;
-		printf("0 %f\n", bestCost);
 		tested.routes.pop_back();
 		for(vector <vector <int>>::iterator route = tested.routes.begin() ; route !=tested.routes.end() ; route++) {
 			if(currentCapacity(data, *route) + data->demand[customer] <= data->vehicleCapacity){
 				for(vector <int>::iterator i = (*route).begin() + 1 ; i != (*route).end() ; i++) {
-					tested.routes.insert(i, customer);
+					i = (*route).insert(i, customer);
 					printRoute(&tested);
 					getCost(data, &tested);
 					if(tested.cost < bestCost) {
 						sol->routes = tested.routes;
 						sol->cost = tested.cost;
-						printf("1 %f\n", bestCost);
 						bestCost = tested.cost;
-						printf("2 %f\n", bestCost);
 					}
-					tested.routes.erase(i);
+					i = (*route).erase(i);
 				}
 			}
 		}

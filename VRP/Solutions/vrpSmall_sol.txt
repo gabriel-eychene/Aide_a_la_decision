@@ -1,6 +1,4 @@
-Upper Bound: -214390645563734502460474629454126242178149245189953162484216748289556480.00
+Upper Bound:         --
 Lower Bound:       0.00
 Running time:       0.00
 
-Solution: 
-0      0      

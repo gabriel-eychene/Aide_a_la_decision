@@ -5,6 +5,12 @@
 
 using namespace std;
 
+
+/**
+* Main of our program
+*
+* @return integer which indicates if everything went well or not.
+*/
 int main() {
 	//Get start time
 	clock_t before = clock();

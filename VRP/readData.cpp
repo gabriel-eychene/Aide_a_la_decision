@@ -1,6 +1,13 @@
 #include "readData.h"
 
-//Read instance file
+/**
+* Read the instance file
+*
+* This function will read the instance file, and will instantiate the data.
+*
+* @param data Object that will contain the instantiated data.
+* @param instName Name of the instance.
+*/
 void readData(Data* data, string instName) {
 
 	//Open instance file
@@ -76,7 +83,15 @@ void readData(Data* data, string instName) {
 	*/
 }
 
-//Get instance name
+
+/**
+* Get the instance name
+*
+* This function will read the instance name, and set it in our data object.
+*
+* @param instancia Name of the instance
+* @param data Object that contains the instantiated data.
+*/
 void getInstanceName(string instancia, Data* data)
 {
 	int length = instancia.size();

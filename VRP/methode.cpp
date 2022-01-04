@@ -1,6 +1,15 @@
 #include "methode.h"
 #include <ilcplex/ilocplex.h>
 
+
+/**
+* CPLEX
+*
+* This method will perform all the treatment concerning the cplex.
+*
+* @param data Object that contains the instantiated data.
+* @param sol Objetc that will contain the solution.
+*/
 void cplex(Data* data, Solution* sol) {
 	IloEnv env;
 
@@ -170,6 +179,15 @@ void cplex(Data* data, Solution* sol) {
 
 }
 
+
+/**
+* CONSTRUCTIVE HEURISTIC METHOD
+*
+* This method will perform all the treatment concerning our constructive heuristic.
+*
+* @param data Object that contains the instantiated data.
+* @param sol Objetc that will contain the solution.
+*/
 void construction(Data* data, Solution* sol) {
 	printf("dist 01 %f\n", data->distance[0][1]);
 	sol->routes = {{0,1,0}};
@@ -207,6 +225,14 @@ void construction(Data* data, Solution* sol) {
 	}
 }
 
+
+/**
+* ROUTE DISPLAY METHOD
+*
+* This method will display the route of the solution.
+*
+* @param sol Object that contains the solution.
+*/
 void printRoute(Solution *sol) {
 	printf("--print--\n");
 	for(vector <int> route : sol->routes) {
@@ -218,6 +244,15 @@ void printRoute(Solution *sol) {
 	printf("--fin print--\n");
 }
 
+
+/**
+* GET COST METHOD
+*
+* This method will set the cost of the solution passed in parameter.
+*
+* @param data Object that contains the instantiated data.
+* @param sol Object that contains the solution.
+*/
 void getCost(Data *data, Solution *sol) {
 	
 	double cost = 0.0;
@@ -234,6 +269,16 @@ void getCost(Data *data, Solution *sol) {
 	sol->cost = cost;
 }
 
+
+/**
+* CURRENT CAPACITY METHOD
+*
+* This method returns the capacity currently used by the route indicated in parameter.
+*
+* @param data Object that contains the instantiated data.
+* @param route route for which we want to know the used capacity.
+* @return capacity currently used by the route.
+*/
 int currentCapacity(Data* data, vector<int> route) {
 	int capacity = 0;
 	for(int customer : route) {
@@ -244,6 +289,15 @@ int currentCapacity(Data* data, vector<int> route) {
 	return capacity;
 }
 
+
+/**
+* PRINT CPLEX SOLUTION IN FILE METHOD
+*
+* This method will print our CPLEX solution in a file.
+*
+* @param data Object that contains the instantiated data.
+* @param sol Object that contains the solution.
+*/
 void printSolutionInFileCplex(Data *data, Solution *sol) {
 	int inf = numeric_limits<int>::max();
 
@@ -282,6 +336,15 @@ void printSolutionInFileCplex(Data *data, Solution *sol) {
 	solution.close();
 }
 
+
+/**
+* PRINT HEURISTIC SOLUTION IN FILE METHOD
+*
+* This method will print our heuristic solution in a file.
+*
+* @param data Object that contains the instantiated data.
+* @param sol Object that contains the solution.
+*/
 void printSolutionInFileHeur(Data *data, Solution *sol) {
 	int inf = numeric_limits<int>::max();
 
